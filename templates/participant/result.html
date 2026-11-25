@@ -8,7 +8,9 @@
       
       <!-- Top Score Summary Card -->
       <div class="card border-0 shadow-sm text-center p-4 p-md-5 mb-4">
-        {% set pct = (result.score / result.total * 100) | round(1) if result.total > 0 else 0 %}
+        {% set r_score = result.score if (result.score is not none) else 0 %}
+        {% set r_total = result.total if (result.total is not none) else 0 %}
+        {% set pct = (r_score / r_total * 100) | round(1) if r_total > 0 else 0 %}
         
         <div class="mb-3">
           {% if pct >= 80 %}
@@ -30,7 +32,7 @@
         <div class="p-4 rounded-3 mb-4 d-inline-block mx-auto" style="min-width: 280px; background-color: var(--ql-surface-subtle); border: 1px solid var(--ql-border);">
           <div class="text-muted small text-uppercase fw-semibold mb-1">Final Score</div>
           <div class="display-3 fw-bold mb-0" style="color: var(--ql-text);">
-            {{ result.score }} <span class="text-muted fs-4">/ {{ result.total }}</span>
+            {{ r_score }} <span class="text-muted fs-4">/ {{ r_total }}</span>
           </div>
           <div class="mt-2">
             <span class="badge {% if pct >= 70 %}bg-success{% elif pct >= 50 %}badge-amber{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
@@ -44,19 +46,19 @@
           <div class="col-6 col-sm-3">
             <div class="p-3 rounded border text-center" style="background-color: var(--ql-surface);">
               <div class="text-muted small">Total Questions</div>
-              <div class="fs-4 fw-bold" style="color: var(--ql-text);">{{ result.total }}</div>
+              <div class="fs-4 fw-bold" style="color: var(--ql-text);">{{ r_total }}</div>
             </div>
           </div>
           <div class="col-6 col-sm-3">
             <div class="p-3 rounded border border-success border-opacity-25 text-center" style="background-color: var(--ql-emerald-light);">
               <div class="text-success small fw-semibold"><i class="bi bi-check-circle-fill me-1"></i> Correct</div>
-              <div class="fs-4 fw-bold text-success">{{ correct_count | default(result.score) }}</div>
+              <div class="fs-4 fw-bold text-success">{{ correct_count | default(r_score) }}</div>
             </div>
           </div>
           <div class="col-6 col-sm-3">
             <div class="p-3 rounded border border-danger border-opacity-25 text-center" style="background-color: var(--ql-terracotta-light);">
               <div class="text-danger small fw-semibold"><i class="bi bi-x-circle-fill me-1"></i> Incorrect</div>
-              <div class="fs-4 fw-bold text-danger">{{ incorrect_count | default(result.total - result.score) }}</div>
+              <div class="fs-4 fw-bold text-danger">{{ incorrect_count | default(r_total - r_score) }}</div>
             </div>
           </div>
           <div class="col-6 col-sm-3">

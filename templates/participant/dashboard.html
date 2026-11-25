@@ -47,9 +47,11 @@
     {% set total_quizzes_taken = results | length %}
     {% set total_score_sum = namespace(score=0, total=0, max_pct=0) %}
     {% for r in results %}
-      {% set total_score_sum.score = total_score_sum.score + r.score %}
-      {% set total_score_sum.total = total_score_sum.total + r.total %}
-      {% set cur_pct = (r.score / r.total * 100) | round(1) if r.total > 0 else 0 %}
+      {% set r_score = r.score if (r.score is not none) else 0 %}
+      {% set r_total = r.total if (r.total is not none) else 0 %}
+      {% set total_score_sum.score = total_score_sum.score + r_score %}
+      {% set total_score_sum.total = total_score_sum.total + r_total %}
+      {% set cur_pct = (r_score / r_total * 100) | round(1) if r_total > 0 else 0 %}
       {% if cur_pct > total_score_sum.max_pct %}
         {% set total_score_sum.max_pct = cur_pct %}
       {% endif %}
@@ -123,13 +125,15 @@
           <tbody>
             {% for r in results %}
             {% set quiz_title = r.quiz_title or (r.quizzes.title if r.quizzes is mapping else 'Quiz #' ~ r.quiz_id) %}
-            {% set pct = (r.score / r.total * 100) | round(1) if r.total > 0 else 0 %}
+            {% set r_score = r.score if (r.score is not none) else 0 %}
+            {% set r_total = r.total if (r.total is not none) else 0 %}
+            {% set pct = (r_score / r_total * 100) | round(1) if r_total > 0 else 0 %}
             <tr>
               <td class="text-muted">{{ loop.index }}</td>
               <td>
                 <h6 class="mb-0 fw-semibold">{{ quiz_title }}</h6>
               </td>
-              <td class="text-center fw-bold">{{ r.score }} / {{ r.total }}</td>
+              <td class="text-center fw-bold">{{ r_score }} / {{ r_total }}</td>
               <td class="text-center">
                 <span class="badge {% if pct >= 70 %}bg-success{% elif pct >= 50 %}badge-amber{% else %}bg-danger{% endif %} fs-6">
                   {{ pct }}%

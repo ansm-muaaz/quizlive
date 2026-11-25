@@ -2,6 +2,8 @@
 QuizLive — Self-paced quiz-taking routes (participants, login required).
 """
 
+import json
+import logging
 from flask import (
     Blueprint,
     render_template,
@@ -16,6 +18,7 @@ from flask import (
 from auth import login_required, get_current_user
 from supabase_client import supabase_admin
 
+logger = logging.getLogger(__name__)
 play_bp = Blueprint("play", __name__)
 
 
@@ -69,16 +72,22 @@ def take_quiz(quiz_id: int):
         )
         questions = questions_resp.data or []
         user_answers = result.get("answers") or {}
+        if isinstance(user_answers, str):
+            try:
+                user_answers = json.loads(user_answers)
+            except Exception:
+                user_answers = {}
 
         correct_count = 0
         incorrect_count = 0
         unanswered_count = 0
 
-        has_answers = bool(user_answers)
+        has_answers = bool(user_answers) and isinstance(user_answers, dict)
         for q in questions:
-            user_ans = user_answers.get(str(q["id"]), "").strip().upper() if has_answers else ""
+            raw_user_ans = user_answers.get(str(q["id"])) if has_answers else None
+            user_ans = (str(raw_user_ans) if raw_user_ans is not None else "").strip().upper()
             q["user_answer"] = user_ans
-            correct_opt = q.get("correct_option", "").strip().upper()
+            correct_opt = (str(q.get("correct_option") or "")).strip().upper()
             q["correct_option"] = correct_opt
 
             if not has_answers:
