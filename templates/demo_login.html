@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Sign In — QuizLive Demo{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+
+      <!-- Header Banner -->
+      <div class="text-center mb-4">
+        <div class="d-inline-flex p-3 rounded-circle mb-3" style="background-color: var(--ql-surface-subtle); color: var(--ql-primary); border: 1px solid var(--ql-border);">
+          <i class="bi bi-shield-lock display-6"></i>
+        </div>
+        <h2 class="fw-bold mb-1">Sign In to QuizLive</h2>
+        <div class="mt-2">
+          <span class="badge border px-3 py-2" style="background-color: var(--ql-surface-subtle); color: var(--ql-amber); border-color: var(--ql-border) !important; font-size: 0.88rem;">
+            <i class="bi bi-database me-1"></i> Local Demo Mode Active
+          </span>
+        </div>
+        <p class="text-muted mt-2 mb-0 small">
+          Select a role below for instant authentication. No external Google OAuth configuration needed during offline evaluation.
+        </p>
+      </div>
+
+      <!-- Quick Role Selection Cards -->
+      <div class="row g-3 mb-4">
+        <!-- Host Card -->
+        <div class="col-md-6">
+          <form method="POST" action="{{ url_for('auth.demo_login') }}">
+            <input type="hidden" name="account" value="host">
+            <button type="submit" class="card text-start w-100 p-4 h-100 ql-action-card">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="ql-stat-icon">
+                  <i class="bi bi-person-video3"></i>
+                </div>
+                <div>
+                  <h5 class="fw-bold mb-0">Demo Host</h5>
+                  <span class="badge badge-amber small">Host Role</span>
+                </div>
+              </div>
+              <p class="text-muted small mb-3">
+                Author quizzes, attach diagram images, launch PIN-based live arenas, and inspect audience score distributions.
+              </p>
+              <div class="mt-auto fw-bold small" style="color: var(--ql-primary);">
+                Sign In as Dr. Sarah <i class="bi bi-arrow-right ms-1"></i>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <!-- Participant Card -->
+        <div class="col-md-6">
+          <form method="POST" action="{{ url_for('auth.demo_login') }}">
+            <input type="hidden" name="account" value="participant">
+            <button type="submit" class="card text-start w-100 p-4 h-100 ql-action-card">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="ql-stat-icon">
+                  <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <div>
+                  <h5 class="fw-bold mb-0">Demo Participant</h5>
+                  <span class="badge badge-sand small">Participant Role</span>
+                </div>
+              </div>
+              <p class="text-muted small mb-3">
+                Browse published quizzes, take timed self-paced tests with instant auto-grading, and view score histories.
+              </p>
+              <div class="mt-auto fw-bold small" style="color: var(--ql-primary);">
+                Sign In as Alex Chen <i class="bi bi-arrow-right ms-1"></i>
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Custom User Card -->
+      <div class="card p-4">
+        <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+          <i class="bi bi-person-plus text-primary"></i> Or Sign In with Custom Profile
+        </h6>
+        <form method="POST" action="{{ url_for('auth.demo_login') }}">
+          <input type="hidden" name="account" value="custom">
+          <div class="row g-2 align-items-center">
+            <div class="col-sm-5">
+              <input type="text" name="custom_name" class="form-control" placeholder="Full Name (e.g. John Doe)" required>
+            </div>
+            <div class="col-sm-4">
+              <select name="custom_role" class="form-select">
+                <option value="participant">Role: Participant (Player / Attendee)</option>
+                <option value="host">Role: Host (Presenter / Admin)</option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <button type="submit" class="btn btn-primary w-100">
+                Continue <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="{{ url_for('join_game') }}" class="text-muted small text-decoration-underline">
+          Joining a live game with a PIN? Click here (no login required) &rarr;
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

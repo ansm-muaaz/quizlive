@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 40" width="180" height="40">
+  <!-- Bespoke Concentric Emblem Mark -->
+  <g transform="translate(2, 2)">
+    <rect x="0" y="0" width="36" height="36" rx="9" fill="#182838" stroke="rgba(243, 210, 175, 0.22)" stroke-width="1.2"/>
+    <path d="M 22.2 25.1 A 8.0 8.0 0 1 1 25.1 22.2" fill="none" stroke="#F8EADC" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="18" cy="18" r="1.8" fill="#F3D2AF"/>
+    <path d="M 21 21 L 26.5 26.5 M 23.5 26.5 L 26.5 26.5 L 26.5 23.5" fill="none" stroke="#A55704" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Typography with deliberate weight contrast -->
+  <text x="48" y="26" font-family="'Plus Jakarta Sans', 'Outfit', -apple-system, sans-serif" font-size="20" font-weight="700" letter-spacing="-0.035em" fill="#F8EADC">
+    Quiz<tspan fill="#A55704" font-weight="800" letter-spacing="-0.02em">Live</tspan>
+  </text>
+  
+  <!-- Understated Live Signal Dot -->
+  <circle cx="140" cy="18" r="3" fill="#A55704"/>
+</svg>

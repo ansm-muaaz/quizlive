@@ -1,0 +1,1298 @@
+/* ==========================================================================
+   QuizLive — Custom Design System
+   Palette: #182838 (Deep Midnight / Slate), #A55704 (Burnt Amber), #F3D2AF (Warm Sand), #F8EADC (Cream)
+   Full Light & Dark Theme Support (WCAG AA Compliant)
+   ========================================================================== */
+
+:root {
+  /* Core Brand Tokens */
+  --ql-pine: #182838;
+  --ql-navy: #182838;
+  --ql-amber: #A55704;
+  --ql-sand: #F3D2AF;
+  --ql-cream: #F8EADC;
+
+  /* Supporting Harmonized Colors */
+  --ql-emerald: #1B6A4C;
+  --ql-emerald-light: #E5F3EC;
+  --ql-terracotta: #A83222;
+  --ql-terracotta-light: #FCEBE8;
+  --ql-slate-blue: #234E6F;
+  --ql-slate-blue-light: #E7EEF4;
+  --ql-gold: #C27803;
+  --ql-gold-light: #FDF4E5;
+
+  /* 4 Option Palette (Earthy & Distinct) */
+  --ql-opt-a: #B33222;
+  --ql-opt-a-hover: #962517;
+  --ql-opt-b: #22577A;
+  --ql-opt-b-hover: #19435F;
+  --ql-opt-c: #A55704;
+  --ql-opt-c-hover: #854402;
+  --ql-opt-d: #1B6A4C;
+  --ql-opt-d-hover: #13523A;
+
+  /* Typography */
+  --ql-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ql-font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   LIGHT THEME (Default)
+   -------------------------------------------------------------------------- */
+[data-bs-theme="light"] {
+  --ql-bg: #F8EADC;
+  --ql-surface: #FFFFFF;
+  --ql-surface-elevated: #FFFFFF;
+  --ql-surface-muted: #F3D2AF;
+  --ql-surface-subtle: #FAF2E8;
+  --ql-border: rgba(24, 40, 56, 0.12);
+  --ql-border-subtle: rgba(24, 40, 56, 0.07);
+  --ql-border-strong: rgba(24, 40, 56, 0.24);
+
+  --ql-text: #182838;
+  --ql-text-muted: #334556;
+  --ql-text-subtle: #4D6072;
+
+  --ql-primary: #A55704;
+  --ql-primary-hover: #874502;
+  --ql-primary-subtle: rgba(165, 87, 4, 0.12);
+  --ql-primary-contrast: #FFFFFF;
+
+  --ql-nav-bg: rgba(255, 255, 255, 0.95);
+  --ql-nav-border: rgba(24, 40, 56, 0.09);
+
+  --ql-shadow-sm: 0 1px 3px rgba(24, 40, 56, 0.06), 0 1px 2px rgba(24, 40, 56, 0.04);
+  --ql-shadow-md: 0 4px 12px rgba(24, 40, 56, 0.08);
+  --ql-shadow-lg: 0 12px 28px rgba(24, 40, 56, 0.12);
+
+  /* Bootstrap Variable Overrides */
+  --bs-body-bg: var(--ql-bg);
+  --bs-body-color: var(--ql-text);
+  --bs-body-color-rgb: 24, 40, 56;
+  --bs-primary: #A55704;
+  --bs-primary-rgb: 165, 87, 4;
+  --bs-secondary: #182838;
+  --bs-secondary-rgb: 24, 40, 56;
+  --bs-border-color: var(--ql-border);
+}
+
+/* --------------------------------------------------------------------------
+   DARK THEME
+   -------------------------------------------------------------------------- */
+[data-bs-theme="dark"] {
+  --ql-bg: #182838;
+  --ql-surface: #1E3144;
+  --ql-surface-elevated: #243B52;
+  --ql-surface-muted: #203548;
+  --ql-surface-subtle: #142230;
+  --ql-border: rgba(243, 210, 175, 0.15);
+  --ql-border-subtle: rgba(243, 210, 175, 0.08);
+  --ql-border-strong: rgba(243, 210, 175, 0.3);
+
+  --ql-text: #F8EADC;
+  --ql-text-muted: #D6C8B4;
+  --ql-text-subtle: #C0B09A;
+
+  --ql-primary: #A55704;
+  --ql-primary-hover: #BF6505;
+  --ql-primary-subtle: rgba(165, 87, 4, 0.28);
+  --ql-primary-contrast: #FFFFFF;
+
+  --ql-nav-bg: rgba(24, 40, 56, 0.96);
+  --ql-nav-border: rgba(243, 210, 175, 0.12);
+
+  --ql-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --ql-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --ql-shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.6);
+
+  /* Bootstrap Variable Overrides */
+  --bs-body-bg: var(--ql-bg);
+  --bs-body-color: var(--ql-text);
+  --bs-body-color-rgb: 248, 234, 220;
+  --bs-primary: #A55704;
+  --bs-primary-rgb: 165, 87, 4;
+  --bs-secondary: #F3D2AF;
+  --bs-secondary-rgb: 243, 210, 175;
+  --bs-border-color: var(--ql-border);
+}
+
+/* --------------------------------------------------------------------------
+   Global Resets & Typography
+   -------------------------------------------------------------------------- */
+body {
+  font-family: var(--ql-font-sans);
+  background-color: var(--ql-bg);
+  color: var(--ql-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6, .ql-display {
+  font-family: var(--ql-font-display);
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  color: var(--ql-text);
+}
+
+a {
+  color: var(--ql-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--ql-primary-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Navbar & Header
+   -------------------------------------------------------------------------- */
+.ql-navbar {
+  background-color: var(--ql-nav-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--ql-nav-border);
+  padding: 0.75rem 0;
+  transition: all 0.2s ease;
+}
+
+.ql-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--ql-font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+  color: var(--ql-text) !important;
+}
+
+.ql-brand-emblem {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ql-brand-accent {
+  color: var(--ql-amber);
+}
+
+.ql-navbar .nav-link {
+  color: var(--ql-text-muted);
+  font-weight: 500;
+  font-size: 0.93rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.ql-navbar .nav-link:hover,
+.ql-navbar .nav-link.active {
+  color: var(--ql-text);
+  background-color: var(--ql-surface-subtle);
+}
+
+/* Theme Toggle Button */
+.ql-theme-toggle {
+  background: var(--ql-surface-subtle);
+  border: 1px solid var(--ql-border);
+  color: var(--ql-text);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.ql-theme-toggle:hover {
+  border-color: var(--ql-primary);
+  color: var(--ql-primary);
+  background-color: var(--ql-surface);
+}
+
+[data-bs-theme="light"] .ql-icon-sun { display: none; }
+[data-bs-theme="light"] .ql-icon-moon { display: inline-block; font-size: 0.95rem; }
+[data-bs-theme="dark"] .ql-icon-moon { display: none; }
+[data-bs-theme="dark"] .ql-icon-sun { display: inline-block; font-size: 0.95rem; color: #F59E0B; }
+
+/* Join Game Navbar Button */
+.btn-join-game {
+  background-color: var(--ql-amber);
+  color: #FFFFFF !important;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-join-game:hover {
+  background-color: var(--ql-primary-hover);
+  color: #FFFFFF !important;
+  box-shadow: var(--ql-shadow-sm);
+}
+
+.ql-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: var(--ql-surface-muted);
+  color: var(--ql-pine);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border: 1px solid var(--ql-border);
+}
+
+/* --------------------------------------------------------------------------
+   Cards & Surfaces
+   -------------------------------------------------------------------------- */
+.card {
+  background-color: var(--ql-surface);
+  border: 1px solid var(--ql-border);
+  border-radius: 12px;
+  box-shadow: var(--ql-shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: var(--ql-text);
+}
+
+.card-header {
+  background-color: var(--ql-surface-subtle);
+  border-bottom: 1px solid var(--ql-border);
+  color: var(--ql-text);
+  font-weight: 600;
+  padding: 0.9rem 1.25rem;
+}
+
+.card-footer {
+  background-color: var(--ql-surface-subtle);
+  border-top: 1px solid var(--ql-border);
+  color: var(--ql-text-muted);
+}
+
+.ql-stat-card {
+  background-color: var(--ql-surface);
+  border: 1px solid var(--ql-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.ql-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  background-color: var(--ql-surface-subtle);
+  color: var(--ql-primary);
+  border: 1px solid var(--ql-border-subtle);
+}
+
+.ql-stat-value {
+  font-family: var(--ql-font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ql-text);
+}
+
+.ql-action-card {
+  background-color: var(--ql-surface);
+  border: 1px solid var(--ql-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: block;
+}
+
+.ql-action-card:hover {
+  border-color: var(--ql-primary);
+  background-color: var(--ql-surface-elevated);
+  box-shadow: var(--ql-shadow-md);
+}
+
+.ql-quiz-card {
+  background-color: var(--ql-surface);
+  border: 1px solid var(--ql-border);
+  border-radius: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ql-quiz-card:hover {
+  border-color: var(--ql-border-strong);
+  box-shadow: var(--ql-shadow-md);
+}
+
+/* --------------------------------------------------------------------------
+   Buttons & Form Controls
+   -------------------------------------------------------------------------- */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 0.5rem 1.15rem;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  background-color: var(--ql-primary);
+  border-color: var(--ql-primary);
+  color: #FFFFFF;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--ql-primary-hover);
+  border-color: var(--ql-primary-hover);
+  color: #FFFFFF;
+  box-shadow: 0 0 0 3px var(--ql-primary-subtle);
+}
+
+.btn-outline-primary {
+  border-color: var(--ql-primary);
+  color: var(--ql-primary);
+  background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--ql-primary);
+  border-color: var(--ql-primary);
+  color: #FFFFFF;
+}
+
+.btn-secondary {
+  background-color: var(--ql-surface-subtle);
+  border-color: var(--ql-border);
+  color: var(--ql-text);
+}
+
+.btn-secondary:hover {
+  background-color: var(--ql-surface-muted);
+  border-color: var(--ql-border-strong);
+  color: var(--ql-text);
+}
+
+.form-control, .form-select {
+  background-color: var(--ql-surface);
+  border: 1px solid var(--ql-border);
+  color: var(--ql-text);
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: var(--ql-surface);
+  border-color: var(--ql-primary);
+  color: var(--ql-text);
+  box-shadow: 0 0 0 3px var(--ql-primary-subtle);
+}
+
+.form-control::placeholder {
+  color: var(--ql-text-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Badges & Tags
+   -------------------------------------------------------------------------- */
+.badge {
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  letter-spacing: 0.01em;
+}
+
+.badge-pine {
+  background-color: var(--ql-pine);
+  color: var(--ql-cream);
+}
+
+.badge-amber {
+  background-color: var(--ql-amber);
+  color: #FFFFFF;
+}
+
+.badge-sand {
+  background-color: var(--ql-sand);
+  color: var(--ql-pine);
+}
+
+/* --------------------------------------------------------------------------
+   Interactive Answer Radio Options (Self-Paced Quiz)
+   -------------------------------------------------------------------------- */
+.ql-radio-card {
+  display: block;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.ql-radio-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ql-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.9rem 1.15rem;
+  border: 1px solid var(--ql-border);
+  border-radius: 10px;
+  background-color: var(--ql-surface);
+  transition: all 0.15s ease;
+  font-weight: 500;
+  color: var(--ql-text);
+}
+
+.ql-radio-card:hover .ql-radio-label {
+  border-color: var(--ql-border-strong);
+  background-color: var(--ql-surface-subtle);
+}
+
+.ql-radio-card input[type="radio"]:checked + .ql-radio-label {
+  border-color: var(--ql-primary);
+  background-color: var(--ql-primary-subtle);
+  color: var(--ql-text);
+  font-weight: 600;
+  box-shadow: 0 0 0 2px var(--ql-primary);
+}
+
+.ql-radio-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background-color: var(--ql-surface-subtle);
+  color: var(--ql-text);
+  border: 1px solid var(--ql-border);
+  flex-shrink: 0;
+}
+
+.ql-radio-card input[type="radio"]:checked + .ql-radio-label .ql-radio-badge {
+  background-color: var(--ql-primary);
+  color: #FFFFFF;
+  border-color: var(--ql-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Question Option Cards (Host Edit View)
+   -------------------------------------------------------------------------- */
+.ql-option-display {
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  background-color: var(--ql-surface-subtle);
+  border: 1px solid var(--ql-border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.ql-option-correct {
+  background-color: var(--ql-emerald-light) !important;
+  border-color: var(--ql-emerald) !important;
+  color: var(--ql-emerald);
+  font-weight: 600;
+}
+
+[data-bs-theme="dark"] .ql-option-correct {
+  background-color: rgba(27, 106, 76, 0.25) !important;
+  border-color: var(--ql-emerald) !important;
+  color: #6EE7B7;
+}
+
+.ql-option-letter {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background-color: var(--ql-surface);
+  color: var(--ql-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border: 1px solid var(--ql-border);
+  flex-shrink: 0;
+}
+
+.ql-option-correct .ql-option-letter {
+  background-color: var(--ql-emerald);
+  color: #FFFFFF;
+  border-color: var(--ql-emerald);
+}
+
+/* --------------------------------------------------------------------------
+   Live Game Arena (Kahoot-Style)
+   -------------------------------------------------------------------------- */
+.game-screen {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 50% 15%, #243B52 0%, #182838 100%);
+  color: #F8EADC;
+}
+
+.game-header {
+  padding: 0.85rem 1.5rem;
+  background: rgba(24, 40, 56, 0.75);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(243, 210, 175, 0.12);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pin-display-card {
+  background: rgba(14, 53, 40, 0.85);
+  border: 1px solid rgba(243, 210, 175, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.pin-huge {
+  font-family: var(--ql-font-display);
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: 10px;
+  color: var(--ql-sand);
+  text-shadow: 0 2px 14px rgba(243, 210, 175, 0.3);
+}
+
+.participant-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(248, 234, 220, 0.1);
+  border: 1px solid rgba(243, 210, 175, 0.22);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #F8EADC;
+}
+
+/* 4 Colored Live Game Buttons */
+.btn-answer {
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #FFFFFF !important;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.15s ease;
+  width: 100%;
+  height: 100%;
+  min-height: 88px;
+  text-align: left;
+}
+
+.btn-answer:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.btn-answer:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-answer:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-answer-a { background-color: var(--ql-opt-a); }
+.btn-answer-a:hover:not(:disabled) { background-color: var(--ql-opt-a-hover); }
+
+.btn-answer-b { background-color: var(--ql-opt-b); }
+.btn-answer-b:hover:not(:disabled) { background-color: var(--ql-opt-b-hover); }
+
+.btn-answer-c { background-color: var(--ql-opt-c); }
+.btn-answer-c:hover:not(:disabled) { background-color: var(--ql-opt-c-hover); }
+
+.btn-answer-d { background-color: var(--ql-opt-d); }
+.btn-answer-d:hover:not(:disabled) { background-color: var(--ql-opt-d-hover); }
+
+.answer-shape-icon {
+  font-size: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+}
+
+/* Timer Circle */
+.ql-timer {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(24, 40, 56, 0.6);
+  border: 3px solid var(--ql-sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ql-font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #F8EADC;
+}
+
+.ql-timer.timer-warning {
+  border-color: #EF4444;
+  color: #EF4444;
+}
+
+/* Leaderboard in Live Mode */
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  background: rgba(14, 53, 40, 0.85);
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(243, 210, 175, 0.15);
+}
+
+.leaderboard-rank {
+  font-weight: 800;
+  font-size: 1.05rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(248, 234, 220, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaderboard-score {
+  font-family: var(--ql-font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--ql-sand);
+}
+
+/* --------------------------------------------------------------------------
+   Podium (Final Results)
+   -------------------------------------------------------------------------- */
+.podium-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1.25rem;
+  padding: 2.5rem 1rem 1rem;
+}
+
+.podium-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 130px;
+}
+
+.podium-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: var(--ql-sand);
+  color: var(--ql-pine);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 0.65rem;
+  box-shadow: var(--ql-shadow-md);
+  font-weight: 800;
+}
+
+.podium-block {
+  width: 100%;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.podium-1st .podium-block {
+  height: 160px;
+  background: linear-gradient(180deg, #A55704 0%, #7C3E01 100%);
+  border: 2px solid #F3D2AF;
+}
+
+.podium-2nd .podium-block {
+  height: 120px;
+  background: linear-gradient(180deg, #37534A 0%, #1F3830 100%);
+  border: 1px solid rgba(243, 210, 175, 0.3);
+}
+
+.podium-3rd .podium-block {
+  height: 90px;
+  background: linear-gradient(180deg, #504132 0%, #2E251C 100%);
+  border: 1px solid rgba(243, 210, 175, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Tables, Lists & Content Blocks
+   -------------------------------------------------------------------------- */
+.table {
+  color: var(--ql-text);
+  border-color: var(--ql-border);
+}
+
+.table th {
+  background-color: var(--ql-surface-subtle);
+  color: var(--ql-text);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--ql-border);
+  padding: 0.75rem 1rem;
+}
+
+.table td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--ql-border-subtle);
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--ql-surface-subtle);
+  color: var(--ql-text);
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+  background-color: var(--ql-surface);
+  border: 1px solid var(--ql-border);
+  box-shadow: var(--ql-shadow-md);
+  border-radius: 10px;
+  padding: 0.4rem;
+}
+
+.dropdown-item {
+  color: var(--ql-text);
+  border-radius: 6px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background-color: var(--ql-surface-subtle);
+  color: var(--ql-text);
+}
+
+.dropdown-divider {
+  border-top-color: var(--ql-border);
+}
+
+/* Alert Boxes */
+.ql-alert {
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.92rem;
+  border: 1px solid transparent;
+}
+
+/* Footer */
+.ql-footer {
+  margin-top: auto;
+  background-color: var(--ql-surface);
+  border-top: 1px solid var(--ql-border);
+  padding: 1.25rem 0;
+  font-size: 0.88rem;
+  color: var(--ql-text-muted);
+}
+
+
+/* ==========================================================================
+   Tactile & Editorial Redesign — Brand, Navigation, Hero & Vignettes
+   Strict Palette: #182838, #1E3144, #243B52, #A55704, #F8EADC, #F3D2AF
+   ========================================================================== */
+
+/* Brand & Navigation Polish */
+.ql-brand-text {
+  font-family: var(--ql-font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+  color: var(--ql-text);
+  line-height: 1;
+}
+
+.ql-brand-accent {
+  font-weight: 800;
+  color: var(--ql-amber);
+}
+
+.ql-live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background-color: var(--ql-amber);
+  border-radius: 50%;
+  margin-left: 2px;
+  vertical-align: baseline;
+  animation: ql-pulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes ql-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+}
+
+/* Subordinated Header Actions */
+.ql-nav-join {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--ql-font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ql-text);
+  background: var(--ql-surface-subtle);
+  border: 1px solid var(--ql-border);
+  padding: 0.38rem 0.75rem;
+  border-radius: 8px;
+  transition: all 150ms ease-out;
+  text-decoration: none;
+}
+
+.ql-nav-join:hover {
+  background: var(--ql-surface);
+  border-color: var(--ql-primary);
+  color: var(--ql-primary);
+}
+
+.ql-nav-signin {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ql-primary);
+  background: var(--ql-primary-subtle);
+  border: 1px solid var(--ql-primary-subtle);
+  padding: 0.38rem 0.85rem;
+  border-radius: 8px;
+  transition: all 150ms ease-out;
+}
+
+.ql-nav-signin:hover {
+  background: var(--ql-primary);
+  color: #FFFFFF;
+  border-color: var(--ql-primary);
+}
+
+/* Local Demo Environment Badge */
+.ql-env-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ql-text-subtle);
+  background: var(--ql-surface-subtle);
+  border: 1px solid var(--ql-border-subtle);
+  padding: 0.24rem 0.55rem;
+  border-radius: 6px;
+}
+
+.ql-env-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--ql-emerald);
+}
+
+/* --------------------------------------------------------------------------
+   Tactile Hero Section & Architectural Hairline Grid
+   -------------------------------------------------------------------------- */
+.ql-landing-wrap {
+  overflow-x: hidden;
+}
+
+.ql-hero-section {
+  position: relative;
+  background-color: var(--ql-bg);
+  border-bottom: 1px solid var(--ql-border-subtle);
+  overflow: hidden;
+}
+
+.ql-hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-size: 32px 32px;
+  background-image:
+    linear-gradient(to right, var(--ql-border-strong) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ql-border-strong) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 15%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 15%, transparent 75%);
+  opacity: 0.22;
+}
+
+[data-bs-theme="light"] .ql-hero-section::before {
+  opacity: 0.16;
+}
+
+.ql-hero-title {
+  font-family: var(--ql-font-display);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--ql-text);
+}
+
+.ql-hero-subhead {
+  font-size: clamp(1.02rem, 2vw, 1.18rem);
+  line-height: 1.6;
+  color: var(--ql-text-muted);
+  max-width: 580px;
+  font-weight: 400;
+}
+
+/* --------------------------------------------------------------------------
+   Unified Tactile PIN Command Bar
+   -------------------------------------------------------------------------- */
+.ql-pin-bar {
+  max-width: 460px;
+  width: 100%;
+}
+
+.ql-pin-bar-inner {
+  display: flex;
+  align-items: center;
+  background-color: var(--ql-surface);
+  border: 1px solid var(--ql-border-strong);
+  border-radius: 12px;
+  padding: 0.35rem 0.4rem 0.35rem 0.95rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08), var(--ql-shadow-md);
+  transition: all 150ms ease-out;
+}
+
+.ql-pin-bar-inner:focus-within {
+  border-color: var(--ql-amber);
+  box-shadow: 0 0 0 3px rgba(165, 87, 4, 0.22), var(--ql-shadow-md);
+}
+
+.ql-pin-prefix {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ql-text-subtle);
+  flex-shrink: 0;
+  margin-right: 0.45rem;
+}
+
+.ql-pin-input {
+  flex: 1 1 auto;
+  border: none;
+  background: transparent;
+  color: var(--ql-text);
+  font-size: 1.05rem;
+  font-family: var(--ql-font-sans);
+  font-weight: 600;
+  outline: none;
+  padding: 0.55rem 0.25rem;
+  min-width: 0;
+}
+
+.ql-pin-input::placeholder {
+  color: var(--ql-text-subtle);
+  font-weight: 400;
+  letter-spacing: normal;
+  font-family: var(--ql-font-sans);
+}
+
+.ql-pin-input:not(:placeholder-shown) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.24em;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--ql-amber);
+}
+
+.ql-pin-submit {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background-color: var(--ql-amber);
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-family: var(--ql-font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 0.62rem 1.15rem;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+  line-height: 1;
+}
+
+.ql-pin-submit:hover {
+  background-color: var(--ql-primary-hover);
+  transform: translateY(-1px);
+}
+
+.ql-pin-submit:active {
+  transform: translateY(0);
+}
+
+.ql-btn-caret {
+  font-size: 1.05rem;
+  line-height: 1;
+  transition: transform 150ms ease-out;
+}
+
+.ql-pin-submit:hover .ql-btn-caret {
+  transform: translateX(3px);
+}
+
+/* Secondary Subordinated Actions */
+.ql-hero-actions {
+  font-size: 0.9rem;
+}
+
+.ql-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--ql-text-muted);
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  transition: all 150ms ease-out;
+}
+
+.ql-secondary-link:hover {
+  color: var(--ql-amber);
+}
+
+.ql-link-arrow {
+  font-size: 0.95rem;
+  transition: transform 150ms ease-out;
+}
+
+.ql-secondary-link:hover .ql-link-arrow {
+  transform: translateX(3px);
+}
+
+.ql-divider-dot {
+  color: var(--ql-border-strong);
+  user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   Swiss-Style Editorial Two-Column Section
+   -------------------------------------------------------------------------- */
+.ql-editorial-section {
+  background-color: var(--ql-surface-subtle);
+  border-bottom: 1px solid var(--ql-border-subtle);
+}
+
+.ql-editorial-col {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ql-col-title {
+  font-family: var(--ql-font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ql-text);
+  line-height: 1.25;
+}
+
+.ql-col-desc {
+  font-size: 0.94rem;
+  line-height: 1.62;
+  color: var(--ql-text-muted);
+  max-width: 44ch;
+}
+
+/* --------------------------------------------------------------------------
+   Quiet Schematic UI Vignettes
+   -------------------------------------------------------------------------- */
+.ql-vignette {
+  margin-top: auto;
+  background-color: var(--ql-surface);
+  border: 1px solid var(--ql-border);
+  box-shadow: var(--ql-shadow-sm);
+  transition: border-color 150ms ease-out;
+}
+
+.ql-vignette:hover {
+  border-color: var(--ql-border-strong);
+}
+
+.ql-vignette-header {
+  border-bottom: 1px solid var(--ql-border-subtle);
+}
+
+.ql-vignette-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ql-amber);
+  background-color: var(--ql-primary-subtle);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.ql-vignette-sub {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  color: var(--ql-text-subtle);
+}
+
+.ql-vignette-score-pill {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--ql-emerald);
+  background-color: var(--ql-emerald-light);
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+}
+
+[data-bs-theme="dark"] .ql-vignette-score-pill {
+  background-color: rgba(27, 106, 76, 0.25);
+  color: #38DF9B;
+}
+
+.ql-vignette-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.65rem;
+  background-color: var(--ql-surface-subtle);
+  border: 1px solid var(--ql-border-subtle);
+  border-radius: 7px;
+  font-size: 0.78rem;
+  color: var(--ql-text-muted);
+}
+
+.ql-pill-shape {
+  font-size: 0.82rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.ql-pill-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ql-vignette-pill.ql-pill-correct {
+  background-color: var(--ql-surface);
+  border-color: var(--ql-emerald);
+  color: var(--ql-text);
+  box-shadow: 0 0 0 1px var(--ql-emerald);
+}
+
+.ql-pill-check {
+  font-size: 0.95rem;
+  color: var(--ql-emerald);
+  font-weight: 700;
+}
+
+[data-bs-theme="dark"] .ql-pill-check {
+  color: #38DF9B;
+}
+
+.ql-vignette-metric-strip {
+  background-color: var(--ql-surface-subtle);
+  border: 1px solid var(--ql-border-subtle);
+}
+
+.ql-vignette-metric-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ql-text-subtle);
+  line-height: 1.2;
+}
+
+.ql-vignette-metric-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ql-text);
+  line-height: 1.2;
+  margin-top: 0.15rem;
+}
+
+.ql-vignette-metric-sub {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ql-text-subtle);
+}
+
+.ql-mini-bar {
+  width: 9px;
+  border-radius: 2px 2px 0 0;
+  transition: height 200ms ease-out;
+  opacity: 0.75;
+}
+
+.ql-mini-bar.ql-bar-active {
+  opacity: 1;
+  box-shadow: 0 -2px 6px rgba(27, 106, 76, 0.4);
+}

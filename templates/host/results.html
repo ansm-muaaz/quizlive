@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Results Overview — QuizLive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="mb-4">
+    <h2 class="fw-bold mb-1">Results Overview</h2>
+    <p class="text-muted mb-0">View performance summaries across all your quizzes.</p>
+  </div>
+
+  {% if quizzes %}
+    <div class="card border-0 shadow-sm">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="fw-semibold">Quiz Title</th>
+              <th class="fw-semibold text-center">Attempts (Self-Paced)</th>
+              <th class="fw-semibold text-center">Game Sessions</th>
+              <th class="fw-semibold text-center">Avg. Score</th>
+              <th class="fw-semibold text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for quiz in quizzes %}
+            <tr>
+              <td>
+                <h6 class="mb-0 fw-semibold">{{ quiz.title }}</h6>
+                <small class="text-muted">{{ quiz.question_count | default(0) }} questions</small>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-primary bg-opacity-10 text-primary fs-6">{{ quiz.attempt_count | default(0) }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-info bg-opacity-10 text-info fs-6">{{ quiz.session_count | default(0) }}</span>
+              </td>
+              <td class="text-center">
+                {% if quiz.avg_score is defined and quiz.avg_score is not none %}
+                  <span class="fw-bold {% if quiz.avg_score >= 70 %}text-success{% elif quiz.avg_score >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ '%.1f' | format(quiz.avg_score) }}%
+                  </span>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <a href="{{ url_for('quiz_results', quiz_id=quiz.id) }}" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-bar-chart-line me-1"></i> View Details
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    <div class="ql-empty-state text-center py-5">
+      <i class="bi bi-clipboard-data display-1 text-muted"></i>
+      <h4 class="fw-bold text-muted mt-3">No Results Yet</h4>
+      <p class="text-muted mb-4">Results will appear here once participants start taking your quizzes.</p>
+      <a href="{{ url_for('host_quizzes') }}" class="btn btn-primary">
+        <i class="bi bi-collection me-1"></i> View My Quizzes
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

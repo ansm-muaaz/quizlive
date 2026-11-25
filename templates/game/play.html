@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}QuizLive Arena{% endblock %}
+
+{% block navbar %}
+<!-- Minimal Player Navbar -->
+<nav class="navbar py-2 px-3 shadow-sm" style="background-color: var(--ql-pine); border-bottom: 1px solid rgba(243, 210, 175, 0.15);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <span class="navbar-brand ql-brand text-white mb-0 fs-5">
+      <img src="{{ url_for('static', filename='img/logo-mark.svg') }}" alt="QuizLive" width="24" height="24" class="me-2">
+      <span style="color: #F8EADC;">Quiz<span style="color: var(--ql-amber);">Live</span> Arena</span>
+    </span>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge badge-amber fs-6 py-2 px-3" id="playerScoreBadge">0 pts</span>
+      <a href="{{ url_for('main.index') }}" class="btn btn-outline-light btn-sm" onclick="return confirm('Leave game session?');">
+        Leave
+      </a>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="game-screen py-4 px-3" id="playerGameApp"
+     data-session-id="{{ game_session.id }}"
+     data-participant-id="{{ participant_id }}"
+     data-status="{{ game_session.status }}">
+
+  <!-- 1. LOBBY VIEW (WAITING FOR START) -->
+  <div id="playerViewLobby" class="container text-center py-5 {% if game_session.status != 'lobby' %}d-none{% endif %}">
+    <div class="row justify-content-center">
+      <div class="col-md-7 col-lg-5">
+        <div class="card p-4 p-md-5 rounded-3 shadow-lg">
+          <div class="mb-4">
+            <div class="spinner-grow mb-3" style="width: 3.5rem; height: 3.5rem; color: var(--ql-amber);" role="status"></div>
+            <h3 class="fw-bold mb-1">Successfully Joined</h3>
+            <p class="text-muted small">Look up at the host's screen to see your nickname.</p>
+          </div>
+          <div class="p-3 rounded-3" style="background-color: var(--ql-surface-subtle); border: 1px solid var(--ql-border);">
+            <span class="text-muted small text-uppercase fw-semibold">Game PIN</span>
+            <div class="fs-3 fw-bold" style="letter-spacing: 4px; color: var(--ql-primary);">{{ game_session.pin }}</div>
+          </div>
+          <p class="text-muted small mt-4 mb-0">Waiting for host to commence question round...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. QUESTION VIEW (ANSWER BUTTONS) -->
+  <div id="playerViewQuestion" class="container py-2 {% if game_session.status != 'question' %}d-none{% endif %}">
+    <!-- Question Header & Timer -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="badge badge-sand fs-6 py-2 px-3" id="playerQBadge">Question</span>
+      <div class="ql-timer" id="playerTimer">30</div>
+    </div>
+
+    <!-- Question Text Card -->
+    <div class="card p-4 mb-3 text-center shadow-sm">
+      <h4 class="fw-bold mb-0" id="playerQText">Question Loading...</h4>
+      <div id="playerQImageContainer" class="mt-3 d-none">
+        <img id="playerQImage" src="" alt="Question Image" class="img-fluid rounded" style="max-height: 180px;">
+      </div>
+    </div>
+
+    <!-- Answer Feedback Notice (after answering) -->
+    <div id="answerLockedNotice" class="alert alert-success text-center py-3 rounded-3 shadow-sm mb-3 d-none" style="background-color: rgba(27, 106, 76, 0.2); border-color: var(--ql-emerald); color: var(--ql-text);">
+      <i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>
+      <strong>Answer submitted!</strong> Awaiting countdown expiry...
+    </div>
+
+    <!-- 4 Colored Touch Buttons for Player -->
+    <div class="row g-3" id="playerAnswerButtons">
+      <div class="col-6">
+        <button class="btn btn-answer btn-answer-a py-4" data-choice="A" id="btnOptA">
+          <span class="answer-shape-icon"><i class="bi bi-triangle-fill"></i></span>
+          <span class="flex-grow-1" id="playerOptA">A</span>
+        </button>
+      </div>
+      <div class="col-6">
+        <button class="btn btn-answer btn-answer-b py-4" data-choice="B" id="btnOptB">
+          <span class="answer-shape-icon"><i class="bi bi-diamond-fill"></i></span>
+          <span class="flex-grow-1" id="playerOptB">B</span>
+        </button>
+      </div>
+      <div class="col-6">
+        <button class="btn btn-answer btn-answer-c py-4" data-choice="C" id="btnOptC">
+          <span class="answer-shape-icon"><i class="bi bi-circle-fill"></i></span>
+          <span class="flex-grow-1" id="playerOptC">C</span>
+        </button>
+      </div>
+      <div class="col-6">
+        <button class="btn btn-answer btn-answer-d py-4" data-choice="D" id="btnOptD">
+          <span class="answer-shape-icon"><i class="bi bi-square-fill"></i></span>
+          <span class="flex-grow-1" id="playerOptD">D</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. REVEAL VIEW (FEEDBACK & RANK) -->
+  <div id="playerViewReveal" class="container text-center py-5 {% if game_session.status != 'reveal' %}d-none{% endif %}">
+    <div class="row justify-content-center">
+      <div class="col-md-7 col-lg-5">
+        <div class="card p-4 p-md-5 rounded-3 shadow-lg" id="revealCard">
+          <div id="revealIcon" class="display-3 mb-2 text-success"><i class="bi bi-check-circle-fill"></i></div>
+          <h2 class="fw-bold mb-1" id="revealHeading">Correct!</h2>
+          <div class="fs-4 fw-bold text-success mb-3" id="pointsEarnedDisplay">+850 pts</div>
+
+          <div class="p-3 rounded-3 mb-4" style="background-color: var(--ql-surface-subtle); border: 1px solid var(--ql-border);">
+            <div class="text-muted small">Your Rank</div>
+            <div class="display-5 fw-bold" id="playerCurrentRank">#1</div>
+            <div class="text-muted small mt-1" id="playerCurrentScore">Total: 1200 pts</div>
+          </div>
+
+          <p class="text-muted small mb-0">Waiting for the host to advance...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. FINISHED VIEW -->
+  <div id="playerViewFinished" class="container text-center py-5 {% if game_session.status != 'finished' %}d-none{% endif %}">
+    <div class="row justify-content-center">
+      <div class="col-md-7 col-lg-5">
+        <div class="card p-4 p-md-5 rounded-3 shadow-lg">
+          <div class="display-2 mb-2" style="color: var(--ql-amber);"><i class="bi bi-trophy-fill"></i></div>
+          <h2 class="fw-bold mb-2">Game Concluded</h2>
+          <p class="text-muted small">Assessment finished.</p>
+
+          <div class="p-4 rounded-3 mb-4" style="background-color: var(--ql-surface-subtle); border: 1px solid var(--ql-border);">
+            <div class="text-muted small text-uppercase fw-bold">Your Standing</div>
+            <div class="display-4 fw-bold mb-1" style="color: var(--ql-primary);" id="playerFinalRank">#1</div>
+            <div class="fs-5 fw-semibold" id="playerFinalScore">0 pts</div>
+          </div>
+
+          <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg w-100 py-3 fw-bold">
+            Return to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/game_play.js') }}"></script>
+{% endblock %}

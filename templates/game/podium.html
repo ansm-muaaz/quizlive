@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Final Standings — QuizLive Arena{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card p-4 p-md-5 rounded-3 shadow-lg">
+        <h2 class="display-5 fw-bold mb-2" style="color: var(--ql-primary);">
+          <i class="bi bi-trophy-fill me-2"></i> Session Concluded
+        </h2>
+        <p class="text-muted mb-4">Official leaderboard standings from the live competition.</p>
+
+        <!-- Podium Steps (1st, 2nd, 3rd) -->
+        <div class="podium-container mb-5">
+          <!-- 2nd Place -->
+          <div class="podium-step podium-2nd">
+            <div class="podium-avatar">
+              <i class="bi bi-award-fill" style="color: #6C7A72;"></i>
+            </div>
+            <div class="fw-bold mb-1">{{ podium[1].nickname if podium|length > 1 else '—' }}</div>
+            <div class="small mb-2" style="color: var(--ql-amber);">{{ podium[1].score if podium|length > 1 else 0 }} pts</div>
+            <div class="podium-block">2nd</div>
+          </div>
+          <!-- 1st Place -->
+          <div class="podium-step podium-1st">
+            <div class="podium-avatar" style="border: 2px solid var(--ql-amber);">
+              <i class="bi bi-trophy-fill" style="color: var(--ql-amber);"></i>
+            </div>
+            <div class="fw-bold fs-5 mb-1">{{ podium[0].nickname if podium|length > 0 else '—' }}</div>
+            <div class="small mb-2 fw-bold" style="color: var(--ql-amber);">{{ podium[0].score if podium|length > 0 else 0 }} pts</div>
+            <div class="podium-block">1st</div>
+          </div>
+          <!-- 3rd Place -->
+          <div class="podium-step podium-3rd">
+            <div class="podium-avatar">
+              <i class="bi bi-award" style="color: #A36B3B;"></i>
+            </div>
+            <div class="fw-bold mb-1">{{ podium[2].nickname if podium|length > 2 else '—' }}</div>
+            <div class="small mb-2" style="color: var(--ql-amber);">{{ podium[2].score if podium|length > 2 else 0 }} pts</div>
+            <div class="podium-block">3rd</div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+          <a href="{{ url_for('main.index') }}" class="btn btn-secondary px-4">
+            <i class="bi bi-house me-1"></i> Home
+          </a>
+          {% if current_user and current_user.role == 'host' %}
+            <a href="{{ url_for('host_dashboard') }}" class="btn btn-primary px-4">
+              <i class="bi bi-speedometer2 me-1"></i> Host Dashboard
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}Participant Dashboard — QuizLive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Welcome Header -->
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="fw-bold">Welcome back, {{ current_user.name }}</h2>
+      <p class="text-muted mb-0">Track your completed quizzes and browse new challenges.</p>
+    </div>
+  </div>
+
+  <!-- Quick Action Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6 col-lg-6">
+      <a href="{{ url_for('browse_quizzes') }}" class="card ql-action-card border-0 shadow-sm text-decoration-none h-100">
+        <div class="card-body d-flex align-items-center p-4 gap-4">
+          <div class="ql-stat-icon">
+            <i class="bi bi-search"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">Browse Available Quizzes</h5>
+            <p class="text-muted small mb-0">Explore quizzes created by hosts and test your knowledge self-paced.</p>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-6 col-lg-6">
+      <a href="{{ url_for('join_game') }}" class="card ql-action-card border-0 shadow-sm text-decoration-none h-100">
+        <div class="card-body d-flex align-items-center p-4 gap-4">
+          <div class="ql-stat-icon">
+            <i class="bi bi-controller"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">Join a Live Game</h5>
+            <p class="text-muted small mb-0">Have a 6-digit PIN? Enter it to compete against others in real-time!</p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Results History -->
+  {% if results %}
+    {% set total_quizzes_taken = results | length %}
+    {% set total_score_sum = namespace(score=0, total=0, max_pct=0) %}
+    {% for r in results %}
+      {% set total_score_sum.score = total_score_sum.score + r.score %}
+      {% set total_score_sum.total = total_score_sum.total + r.total %}
+      {% set cur_pct = (r.score / r.total * 100) | round(1) if r.total > 0 else 0 %}
+      {% if cur_pct > total_score_sum.max_pct %}
+        {% set total_score_sum.max_pct = cur_pct %}
+      {% endif %}
+    {% endfor %}
+    {% set avg_pct = (total_score_sum.score / total_score_sum.total * 100) | round(1) if total_score_sum.total > 0 else 0 %}
+
+    <!-- Participant Performance Strip -->
+    <div class="row g-3 mb-4">
+      <div class="col-sm-4">
+        <div class="card border-0 shadow-sm p-3 h-100" style="background-color: var(--ql-surface); border: 1px solid var(--ql-border) !important;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="ql-stat-icon" style="background-color: rgba(36, 59, 82, 0.4); color: var(--ql-sand);">
+              <i class="bi bi-patch-check-fill fs-4"></i>
+            </div>
+            <div>
+              <div class="fs-4 fw-bold mb-0">{{ total_quizzes_taken }}</div>
+              <div class="text-muted small">Quizzes Completed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card border-0 shadow-sm p-3 h-100" style="background-color: var(--ql-surface); border: 1px solid var(--ql-border) !important;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="ql-stat-icon" style="background-color: rgba(27, 106, 76, 0.2); color: var(--ql-emerald);">
+              <i class="bi bi-graph-up-arrow fs-4"></i>
+            </div>
+            <div>
+              <div class="fs-4 fw-bold mb-0 text-success">{{ avg_pct }}%</div>
+              <div class="text-muted small">Average Accuracy</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card border-0 shadow-sm p-3 h-100" style="background-color: var(--ql-surface); border: 1px solid var(--ql-border) !important;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="ql-stat-icon" style="background-color: rgba(165, 87, 4, 0.15); color: var(--ql-amber);">
+              <i class="bi bi-trophy-fill fs-4"></i>
+            </div>
+            <div>
+              <div class="fs-4 fw-bold mb-0" style="color: var(--ql-amber);">{{ total_score_sum.max_pct }}%</div>
+              <div class="text-muted small">Best Score</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0">
+      <i class="bi bi-clock-history me-2 text-primary"></i>My Quiz History ({{ results | length }})
+    </h4>
+  </div>
+
+  {% if results %}
+    <div class="card border-0 shadow-sm">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="fw-semibold">#</th>
+              <th class="fw-semibold">Quiz Title</th>
+              <th class="fw-semibold text-center">Score</th>
+              <th class="fw-semibold text-center">Percentage</th>
+              <th class="fw-semibold">Submitted Date</th>
+              <th class="fw-semibold text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in results %}
+            {% set quiz_title = r.quiz_title or (r.quizzes.title if r.quizzes is mapping else 'Quiz #' ~ r.quiz_id) %}
+            {% set pct = (r.score / r.total * 100) | round(1) if r.total > 0 else 0 %}
+            <tr>
+              <td class="text-muted">{{ loop.index }}</td>
+              <td>
+                <h6 class="mb-0 fw-semibold">{{ quiz_title }}</h6>
+              </td>
+              <td class="text-center fw-bold">{{ r.score }} / {{ r.total }}</td>
+              <td class="text-center">
+                <span class="badge {% if pct >= 70 %}bg-success{% elif pct >= 50 %}badge-amber{% else %}bg-danger{% endif %} fs-6">
+                  {{ pct }}%
+                </span>
+              </td>
+              <td class="text-muted small">{{ r.submitted_at[:16].replace('T', ' ') if r.submitted_at else 'Recent' }}</td>
+              <td class="text-end">
+                <a href="{{ url_for('take_quiz', quiz_id=r.quiz_id) }}" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-eye me-1"></i> View Result
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    <div class="card border-0 shadow-sm text-center py-5 px-4 rounded-4" style="background-color: var(--ql-surface); border: 1px solid var(--ql-border) !important;">
+      <div class="d-inline-flex p-3 rounded-circle mb-3 mx-auto" style="background-color: var(--ql-surface-subtle); color: var(--ql-amber); border: 1px solid var(--ql-border);">
+        <i class="bi bi-journal-text display-5"></i>
+      </div>
+      <h4 class="fw-bold mb-2" style="color: var(--ql-text);">No Quiz Attempts Yet</h4>
+      <p class="text-muted mb-4 mx-auto" style="max-width: 480px;">
+        You haven't completed any quizzes yet. Explore our library of self-paced quizzes or enter a PIN to join a live arena!
+      </p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a href="{{ url_for('browse_quizzes') }}" class="btn btn-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
+          <i class="bi bi-search"></i>
+          <span>Browse Quizzes</span>
+        </a>
+        <a href="{{ url_for('join_game') }}" class="btn btn-outline-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2">
+          <i class="bi bi-controller"></i>
+          <span>Join Live Arena</span>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36">
+  <!-- Outer Slate Square Container (Center: 18, 18) -->
+  <rect x="2" y="2" width="32" height="32" rx="8" fill="#182838" stroke="rgba(243, 210, 175, 0.22)" stroke-width="1.2"/>
+
+  <!-- Concentric Circular Ring (Center: 18, 18) with 45-degree gap -->
+  <path d="M 22.2 25.1 A 8.0 8.0 0 1 1 25.1 22.2" fill="none" stroke="#F8EADC" stroke-width="2.6" stroke-linecap="round"/>
+
+  <!-- Central Pulse Core (Center: 18, 18) -->
+  <circle cx="18" cy="18" r="1.8" fill="#F3D2AF"/>
+
+  <!-- Sharp Play-Caret / Buzzer Tail (Burnt Amber) -->
+  <path d="M 21 21 L 26.5 26.5 M 23.5 26.5 L 26.5 26.5 L 26.5 23.5" fill="none" stroke="#A55704" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

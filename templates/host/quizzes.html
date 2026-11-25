@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}My Quizzes — QuizLive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Header & Actions -->
+  <div class="row align-items-center mb-4 g-3">
+    <div class="col-md-5">
+      <h2 class="fw-bold mb-1">My Quizzes</h2>
+      <p class="text-muted mb-0">Manage, edit, duplicate, and host your interactive quizzes.</p>
+    </div>
+    <div class="col-md-4">
+      <div class="input-group shadow-sm">
+        <span class="input-group-text border-end-0" style="background-color: var(--ql-surface);"><i class="bi bi-search text-muted"></i></span>
+        <input type="text" id="hostQuizSearch" class="form-control border-start-0" placeholder="Filter quizzes by title...">
+      </div>
+    </div>
+    <div class="col-md-3 text-md-end">
+      <a href="{{ url_for('create_quiz') }}" class="btn btn-primary w-100 w-md-auto">
+        <i class="bi bi-plus-lg me-1"></i> Create New Quiz
+      </a>
+    </div>
+  </div>
+
+  {% if quizzes %}
+    <div class="row g-4" id="hostQuizGrid">
+      {% for quiz in quizzes %}
+      <div class="col-md-6 col-xl-4 host-quiz-item" data-title="{{ quiz.title | lower }}">
+        <div class="card ql-quiz-card border-0 shadow-sm h-100">
+          <div class="card-body d-flex flex-column p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title fw-bold mb-0 text-truncate" title="{{ quiz.title }}">{{ quiz.title }}</h5>
+              <span class="badge bg-primary bg-opacity-10 text-primary ms-2 flex-shrink-0">
+                {{ quiz.question_count | default(0) }} Q
+              </span>
+            </div>
+            <p class="card-text text-muted small flex-grow-1">
+              {{ quiz.description[:110] + '...' if quiz.description and quiz.description|length > 110 else quiz.description or 'No description provided.' }}
+            </p>
+            <div class="text-muted small mb-3">
+              <i class="bi bi-calendar3 me-1"></i> Created {{ quiz.created_at[:10] if quiz.created_at else 'Recently' }}
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-auto pt-2 border-top">
+              <a href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}" class="btn btn-sm btn-outline-primary" title="Edit questions and details">
+                <i class="bi bi-pencil me-1"></i> Edit
+              </a>
+              <a href="{{ url_for('quiz_results', quiz_id=quiz.id) }}" class="btn btn-sm btn-outline-secondary" title="View quiz attempts and analytics">
+                <i class="bi bi-bar-chart me-1"></i> Results
+              </a>
+              <form method="POST" action="{{ url_for('duplicate_quiz', quiz_id=quiz.id) }}" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-outline-info" title="Duplicate this quiz with all questions" onclick="return confirm('Duplicate this quiz?');">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </form>
+              <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ quiz.id }}" title="Delete quiz">
+                <i class="bi bi-trash"></i>
+              </button>
+              <a href="{{ url_for('start_game', quiz_id=quiz.id) }}" class="btn btn-sm btn-primary ms-auto" title="Launch live multiplayer game">
+                <i class="bi bi-play-fill me-1"></i> Go Live
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div class="modal fade" id="deleteModal{{ quiz.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ quiz.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0">
+              <h5 class="modal-title fw-bold" id="deleteModalLabel{{ quiz.id }}">Delete Quiz</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete <strong>{{ quiz.title }}</strong>?</p>
+              <p class="text-danger small mb-0">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                This will permanently remove the quiz, all its questions, attached diagrams, and all associated participant results. This action cannot be undone.
+              </p>
+            </div>
+            <div class="modal-footer border-0">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <form method="POST" action="{{ url_for('delete_quiz', quiz_id=quiz.id) }}" class="d-inline">
+                <button type="submit" class="btn btn-danger">
+                  <i class="bi bi-trash me-1"></i> Delete Quiz
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- No search results message -->
+    <div id="noHostSearchResults" class="text-center py-5 d-none">
+      <i class="bi bi-search display-3 text-muted"></i>
+      <h5 class="fw-bold text-muted mt-3">No matching quizzes found</h5>
+      <p class="text-muted">Try searching with a different term.</p>
+    </div>
+
+  {% else %}
+    <div class="ql-empty-state text-center py-5 card border-0 shadow-sm p-4">
+      <div class="mb-3">
+        <i class="bi bi-collection display-1 text-muted"></i>
+      </div>
+      <h4 class="fw-bold text-muted">No Quizzes Yet</h4>
+      <p class="text-muted mb-4">Create your first quiz and start engaging your participants with live arenas or self-paced assessments!</p>
+      <div>
+        <a href="{{ url_for('create_quiz') }}" class="btn btn-primary btn-lg px-4">
+          <i class="bi bi-plus-lg me-1"></i> Create Your First Quiz
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function() {
+    const searchInput = document.getElementById('hostQuizSearch');
+    const quizGrid = document.getElementById('hostQuizGrid');
+    const noResults = document.getElementById('noHostSearchResults');
+    if (!searchInput || !quizGrid) return;
+
+    searchInput.addEventListener('input', function() {
+      const q = this.value.trim().toLowerCase();
+      const items = quizGrid.querySelectorAll('.host-quiz-item');
+      let visibleCount = 0;
+
+      items.forEach(item => {
+        const title = item.getAttribute('data-title') || '';
+        if (title.includes(q)) {
+          item.classList.remove('d-none');
+          visibleCount++;
+        } else {
+          item.classList.add('d-none');
+        }
+      });
+
+      if (noResults) {
+        if (visibleCount === 0 && q.length > 0) {
+          noResults.classList.remove('d-none');
+        } else {
+          noResults.classList.add('d-none');
+        }
+      }
+    });
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Create Quiz — QuizLive{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 680px;">
+  <div class="mb-4">
+    <a href="{{ url_for('host_quizzes') }}" class="text-decoration-none text-muted small">
+      <i class="bi bi-arrow-left me-1"></i> Back to My Quizzes
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+      <h2 class="fw-bold mb-1">Create a New Quiz</h2>
+      <p class="text-muted mb-4">Fill in the details below to create your quiz. You can add questions after creating it.</p>
+
+      <form method="POST" action="{{ url_for('quizzes.create_quiz') }}" novalidate id="quizForm">
+        <div class="mb-4">
+          <label for="title" class="form-label fw-semibold">Quiz Title <span class="text-danger">*</span></label>
+          <input type="text" class="form-control form-control-lg" id="title" name="title"
+                 placeholder="e.g., World Geography Challenge" required minlength="3" maxlength="100"
+                 value="{{ request.form.get('title', '') }}">
+          <div class="form-text">Give your quiz a catchy, descriptive title (3–100 characters).</div>
+          <div class="invalid-feedback">Please enter a title between 3 and 100 characters.</div>
+        </div>
+
+        <div class="mb-4">
+          <label for="description" class="form-label fw-semibold">Description <span class="text-muted fw-normal">(optional)</span></label>
+          <textarea class="form-control" id="description" name="description" rows="4"
+                    placeholder="Describe what this quiz is about..."
+                    maxlength="500">{{ request.form.get('description', '') }}</textarea>
+          <div class="form-text">A short description to help participants know what to expect.</div>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary btn-lg px-4">
+            <i class="bi bi-plus-lg me-1"></i> Create Quiz
+          </button>
+          <a href="{{ url_for('host_quizzes') }}" class="btn btn-outline-secondary btn-lg px-4">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function() {
+    const form = document.getElementById('quizForm');
+    form.addEventListener('submit', function(e) {
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    });
+  })();
+</script>
+{% endblock %}

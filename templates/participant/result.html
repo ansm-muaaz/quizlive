@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %}Quiz Results — QuizLive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+      
+      <!-- Top Score Summary Card -->
+      <div class="card border-0 shadow-sm text-center p-4 p-md-5 mb-4">
+        {% set pct = (result.score / result.total * 100) | round(1) if result.total > 0 else 0 %}
+        
+        <div class="mb-3">
+          {% if pct >= 80 %}
+            <div class="display-1 text-success"><i class="bi bi-trophy-fill"></i></div>
+            <h3 class="fw-bold text-success mt-2">Outstanding Performance!</h3>
+          {% elif pct >= 50 %}
+            <div class="display-1 text-primary"><i class="bi bi-award-fill"></i></div>
+            <h3 class="fw-bold text-primary mt-2">Good Effort!</h3>
+          {% else %}
+            <div class="display-1 text-warning"><i class="bi bi-lightbulb-fill"></i></div>
+            <h3 class="fw-bold text-warning mt-2">Keep Practicing!</h3>
+          {% endif %}
+          <p class="text-muted">
+            {{ quiz.title if quiz else 'Quiz' }} &bull; Your answers have been recorded and graded.
+          </p>
+        </div>
+
+        <!-- Big Score Box -->
+        <div class="p-4 rounded-3 mb-4 d-inline-block mx-auto" style="min-width: 280px; background-color: var(--ql-surface-subtle); border: 1px solid var(--ql-border);">
+          <div class="text-muted small text-uppercase fw-semibold mb-1">Final Score</div>
+          <div class="display-3 fw-bold mb-0" style="color: var(--ql-text);">
+            {{ result.score }} <span class="text-muted fs-4">/ {{ result.total }}</span>
+          </div>
+          <div class="mt-2">
+            <span class="badge {% if pct >= 70 %}bg-success{% elif pct >= 50 %}badge-amber{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
+              {{ pct }}% Score
+            </span>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="row g-3 justify-content-center mb-4">
+          <div class="col-6 col-sm-3">
+            <div class="p-3 rounded border text-center" style="background-color: var(--ql-surface);">
+              <div class="text-muted small">Total Questions</div>
+              <div class="fs-4 fw-bold" style="color: var(--ql-text);">{{ result.total }}</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="p-3 rounded border border-success border-opacity-25 text-center" style="background-color: var(--ql-emerald-light);">
+              <div class="text-success small fw-semibold"><i class="bi bi-check-circle-fill me-1"></i> Correct</div>
+              <div class="fs-4 fw-bold text-success">{{ correct_count | default(result.score) }}</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="p-3 rounded border border-danger border-opacity-25 text-center" style="background-color: var(--ql-terracotta-light);">
+              <div class="text-danger small fw-semibold"><i class="bi bi-x-circle-fill me-1"></i> Incorrect</div>
+              <div class="fs-4 fw-bold text-danger">{{ incorrect_count | default(result.total - result.score) }}</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="p-3 rounded border text-center" style="background-color: var(--ql-surface);">
+              <div class="text-muted small">Accuracy</div>
+              <div class="fs-4 fw-bold text-primary">{{ pct }}%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-muted small mb-4">
+          <i class="bi bi-clock me-1"></i> Submitted on {{ result.submitted_at }}
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+          <a href="{{ url_for('browse_quizzes') }}" class="btn btn-outline-primary px-4">
+            <i class="bi bi-search me-1"></i> Browse More Quizzes
+          </a>
+          <a href="{{ url_for('participant_dashboard') }}" class="btn btn-primary px-4">
+            <i class="bi bi-speedometer2 me-1"></i> Go to Dashboard
+          </a>
+        </div>
+      </div>
+
+      <!-- Question-by-Question Answers Breakdown Section -->
+      {% if questions %}
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="fw-bold mb-0">
+            <i class="bi bi-card-checklist me-2 text-primary"></i>Answers Breakdown ({{ questions | length }})
+          </h4>
+          <span class="text-muted small">Review all correct and incorrect answers</span>
+        </div>
+
+        <div class="d-flex flex-column gap-3">
+          {% for q in questions %}
+          {% set is_correct = (q.status == 'correct') %}
+          {% set is_incorrect = (q.status == 'incorrect') %}
+          {% set is_unanswered = (q.status == 'unanswered') %}
+          {% set is_revealed = (q.status == 'revealed') %}
+
+          <div class="card border-0 shadow-sm p-4 {% if is_correct %}border-start border-4 border-success{% elif is_incorrect %}border-start border-4 border-danger{% elif is_revealed %}border-start border-4 border-primary{% else %}border-start border-4 border-secondary{% endif %}">
+            
+            <!-- Question Header -->
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill bg-secondary bg-opacity-25 text-body fw-bold px-2 py-1">
+                  Question {{ loop.index }}
+                </span>
+                {% if is_correct %}
+                  <span class="badge bg-success bg-opacity-10 text-success border border-success fw-semibold">
+                    <i class="bi bi-check-circle-fill me-1"></i> Correct (+1 pt)
+                  </span>
+                {% elif is_incorrect %}
+                  <span class="badge bg-danger bg-opacity-10 text-danger border border-danger fw-semibold">
+                    <i class="bi bi-x-circle-fill me-1"></i> Incorrect (0 pts)
+                  </span>
+                {% elif is_revealed %}
+                  <span class="badge bg-primary bg-opacity-10 text-primary border border-primary fw-semibold">
+                    <i class="bi bi-check-circle me-1"></i> Answer Key
+                  </span>
+                {% else %}
+                  <span class="badge bg-secondary bg-opacity-10 text-secondary border fw-semibold">
+                    <i class="bi bi-dash-circle me-1"></i> Unanswered
+                  </span>
+                {% endif %}
+              </div>
+
+              {% if q.time_limit %}
+              <span class="text-muted small"><i class="bi bi-stopwatch me-1"></i>{{ q.time_limit }}s</span>
+              {% endif %}
+            </div>
+
+            <!-- Question Text -->
+            <h5 class="fw-bold mb-3" style="color: var(--ql-text);">{{ q.question_text }}</h5>
+
+            <!-- Optional Question Diagram / Image -->
+            {% if q.image_url %}
+            <div class="mb-3 text-center p-2 rounded" style="background-color: var(--ql-surface-subtle); border: 1px solid var(--ql-border);">
+              <img src="{{ q.image_url }}" alt="Question diagram" class="img-fluid rounded" style="max-height: 220px; object-fit: contain;">
+            </div>
+            {% endif %}
+
+            <!-- Options Grid -->
+            <div class="row g-2">
+              {% for opt_key, opt_label in [('A', q.option_a), ('B', q.option_b), ('C', q.option_c), ('D', q.option_d)] %}
+                {% if opt_label %}
+                {% set is_this_correct = (q.correct_option == opt_key) %}
+                {% set is_this_chosen = (q.user_answer == opt_key) %}
+
+                <div class="col-md-6">
+                  <div class="p-3 rounded h-100 d-flex justify-content-between align-items-center
+                    {% if is_this_correct %}
+                      border border-2 border-success bg-success bg-opacity-10 text-success
+                    {% elif is_this_chosen %}
+                      border border-2 border-danger bg-danger bg-opacity-10 text-danger
+                    {% else %}
+                      border border-1 text-muted
+                    {% endif %}"
+                    style="{% if not is_this_correct and not is_this_chosen %}background-color: var(--ql-surface); border-color: var(--ql-border) !important;{% endif %}">
+                    
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="badge rounded-circle px-2 py-1 fw-bold
+                        {% if is_this_correct %}bg-success text-white{% elif is_this_chosen %}bg-danger text-white{% else %}bg-secondary bg-opacity-25 text-body{% endif %}">
+                        {{ opt_key }}
+                      </span>
+                      <span class="fw-medium text-body">{{ opt_label }}</span>
+                    </div>
+
+                    <div>
+                      {% if is_this_correct and is_this_chosen %}
+                        <span class="badge bg-success text-white small">
+                          <i class="bi bi-check-lg me-1"></i> Correct &bull; Your Answer
+                        </span>
+                      {% elif is_this_correct %}
+                        <span class="badge bg-success bg-opacity-25 text-success small border border-success">
+                          <i class="bi bi-check-lg me-1"></i> Correct Answer
+                        </span>
+                      {% elif is_this_chosen %}
+                        <span class="badge bg-danger text-white small">
+                          <i class="bi bi-x-lg me-1"></i> Your Answer
+                        </span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

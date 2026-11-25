@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% block title %}Results: {{ quiz.title }} — QuizLive{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="mb-4">
+    <a href="{{ url_for('host_results') }}" class="text-decoration-none text-muted small">
+      <i class="bi bi-arrow-left me-1"></i> Back to Results Overview
+    </a>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <h2 class="fw-bold mb-1">{{ quiz.title }}</h2>
+      <p class="text-muted mb-0">{{ quiz.question_count | default(0) }} questions &middot; Detailed performance analysis</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('export_quiz_results', quiz_id=quiz.id) }}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-filetype-csv me-1"></i> Export CSV
+      </a>
+      <a href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-pencil me-1"></i> Edit Quiz
+      </a>
+      <a href="{{ url_for('start_game', quiz_id=quiz.id) }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-play-fill me-1"></i> Launch Live Game
+      </a>
+    </div>
+  </div>
+
+  <!-- Score Distribution Chart -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+      <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Score Distribution</h5>
+      <div class="ql-chart-container">
+        <canvas id="scoreChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs ql-tabs mb-0" id="resultTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="selfpaced-tab" data-bs-toggle="tab" data-bs-target="#selfpaced"
+              type="button" role="tab" aria-controls="selfpaced" aria-selected="true">
+        <i class="bi bi-journal-check me-1"></i> Self-Paced Results
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="livegame-tab" data-bs-toggle="tab" data-bs-target="#livegame"
+              type="button" role="tab" aria-controls="livegame" aria-selected="false">
+        <i class="bi bi-broadcast me-1"></i> Live Game Results
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="resultTabsContent">
+    <!-- Self-Paced Results -->
+    <div class="tab-pane fade show active" id="selfpaced" role="tabpanel" aria-labelledby="selfpaced-tab">
+      <div class="card border-0 shadow-sm border-top-0 rounded-top-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th class="fw-semibold">#</th>
+                <th class="fw-semibold">Participant</th>
+                <th class="fw-semibold text-center">Score</th>
+                <th class="fw-semibold text-center">Total</th>
+                <th class="fw-semibold text-center">Percentage</th>
+                <th class="fw-semibold">Date</th>
+              </tr>
+            </thead>
+            <tbody id="selfPacedBody">
+              {% if self_paced_results %}
+                {% for r in self_paced_results %}
+                <tr>
+                  <td class="text-muted">{{ loop.index }}</td>
+                  <td class="fw-semibold">{{ r.participant_name }}</td>
+                  <td class="text-center fw-bold">{{ r.score }}</td>
+                  <td class="text-center">{{ r.total }}</td>
+                  <td class="text-center">
+                    {% set pct = (r.score / r.total * 100) | round(1) if r.total > 0 else 0 %}
+                    <span class="badge {% if pct >= 70 %}bg-success{% elif pct >= 50 %}badge-amber{% else %}bg-danger{% endif %} fs-6">
+                      {{ pct }}%
+                    </span>
+                  </td>
+                  <td class="text-muted small">{{ r.completed_at[:16].replace('T', ' ') if r.completed_at else 'Recent' }}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-muted">
+                    <i class="bi bi-inbox me-2"></i>No self-paced results yet.
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Game Results -->
+    <div class="tab-pane fade" id="livegame" role="tabpanel" aria-labelledby="livegame-tab">
+      <div class="card border-0 shadow-sm border-top-0 rounded-top-0">
+        <div class="card-body p-4" id="liveGameResults">
+          {% if game_sessions %}
+            {% for session in game_sessions %}
+            <div class="mb-4 {% if not loop.last %}border-bottom pb-4{% endif %}">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <h6 class="fw-bold mb-0">
+                    <i class="bi bi-controller me-1 text-primary"></i>
+                    Session PIN: <span class="text-primary">{{ session.pin }}</span>
+                  </h6>
+                  <small class="text-muted">{{ session.created_at }} &middot; {{ session.participants | length }} participants</small>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th class="fw-semibold">Rank</th>
+                      <th class="fw-semibold">Nickname</th>
+                      <th class="fw-semibold text-center">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for p in session.participants | sort(attribute='score', reverse=True) %}
+                    <tr>
+                      <td>
+                        {% if loop.index == 1 %}
+                          <i class="bi bi-trophy-fill text-warning"></i>
+                        {% elif loop.index == 2 %}
+                          <i class="bi bi-trophy-fill text-secondary"></i>
+                        {% elif loop.index == 3 %}
+                          <i class="bi bi-trophy-fill" style="color:#cd7f32"></i>
+                        {% else %}
+                          <span class="text-muted">{{ loop.index }}</span>
+                        {% endif %}
+                      </td>
+                      <td class="fw-semibold">{{ p.nickname }}</td>
+                      <td class="text-center">
+                        <span class="badge bg-primary bg-opacity-10 text-primary fs-6">{{ p.score }}</span>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="text-center py-4 text-muted">
+              <i class="bi bi-broadcast display-4"></i>
+              <p class="mt-2">No live game sessions yet.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function() {
+    const quizId = '{{ quiz.id }}';
+    const ctx = document.getElementById('scoreChart');
+    if (!ctx) return;
+
+    fetch(`/api/results/${quizId}`)
+      .then(r => r.json())
+      .then(data => {
+        const labels = data.labels || [];
+        const scores = data.scores || [];
+        const maxScore = data.max_score || 1;
+
+        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+        const textColor = isDark ? '#F8EADC' : '#182838';
+        const gridColor = isDark ? 'rgba(243, 210, 175, 0.12)' : 'rgba(24, 40, 56, 0.08)';
+
+        const colors = scores.map(s => {
+          const pct = (s / maxScore) * 100;
+          if (pct >= 70) return 'rgba(27, 106, 76, 0.85)';
+          if (pct >= 50) return 'rgba(165, 87, 4, 0.85)';
+          return 'rgba(168, 50, 34, 0.85)';
+        });
+
+        const borderColors = scores.map(s => {
+          const pct = (s / maxScore) * 100;
+          if (pct >= 70) return '#1B6A4C';
+          if (pct >= 50) return '#A55704';
+          return '#A83222';
+        });
+
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Score',
+              data: scores,
+              backgroundColor: colors,
+              borderColor: borderColors,
+              borderWidth: 1.5,
+              borderRadius: 6,
+              barPercentage: 0.6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: maxScore,
+                ticks: { stepSize: 1, color: textColor },
+                grid: { color: gridColor },
+                title: { display: true, text: 'Score', color: textColor, font: { weight: 'bold' } }
+              },
+              x: {
+                ticks: { color: textColor },
+                grid: { display: false },
+                title: { display: true, text: 'Participant', color: textColor, font: { weight: 'bold' } }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `Score: ${context.raw} / ${maxScore}`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      })
+      .catch(err => {
+        console.error('Failed to load chart data:', err);
+        ctx.parentElement.innerHTML = '<p class="text-muted text-center py-3">Unable to load chart data.</p>';
+      });
+  })();
+</script>
+{% endblock %}
